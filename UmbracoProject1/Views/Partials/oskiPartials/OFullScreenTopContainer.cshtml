@@ -1,0 +1,101 @@
+﻿@inherits UmbracoViewPage<IOFullScreenTopContainer>
+@using System.Text.RegularExpressions
+
+@{
+    var pattern = @"\w*.mp4|.ogg|.webm$";
+    var rgx = new Regex(pattern);
+    var imageOrVideoMobile = Model.OImageOrVideoMobile ?? Model.OImageOrVideoDesktop;
+    var buttonUrl = Model.OButton?.Url ?? string.Empty;
+
+    var imageDesktopAltText = string.Empty;
+    var imageMobileAltText = string.Empty;
+
+
+    var imageMobile = "#";
+    var imageDesktop = "#";
+    var videoDesktop = "#";
+    var videoMobile = "#";
+    var posterMobile = "#";
+    var posterDesktop = "#";
+
+    if (Model.OImageOrVideoMobile != null)
+    {
+        imageMobileAltText = Umbraco.Media(Model.OImageOrVideoMobile.Key)!.Value("umbracoAltText")?.ToString();
+    }
+
+    if (Model.OImageOrVideoDesktop != null)
+    {
+        imageDesktopAltText = Umbraco.Media(Model.OImageOrVideoDesktop.Key)!.Value("umbracoAltText")?.ToString();
+        imageMobileAltText = string.IsNullOrWhiteSpace(imageMobileAltText) ? imageDesktopAltText + "Mobile" : imageMobileAltText;
+        (videoDesktop, imageDesktop) = rgx.IsMatch(Model.OImageOrVideoDesktop.Url()) ? (Model.OImageOrVideoDesktop.Url(), "#") : ("#", Model.OImageOrVideoDesktop.Url());
+        (videoMobile, imageMobile) = rgx.IsMatch(imageOrVideoMobile.Url()) ? (imageOrVideoMobile.Url(), "#") : ("#", imageOrVideoMobile.Url());
+    }
+
+    var homeBannerClass = Model.OShowHonors ? "top-honors" : string.Empty;
+
+    var color = Model.OFontColor != null ? $"#{Model.OFontColor}" : string.Empty;
+
+    var title = Regex.Replace(Model.OTitle.ToHtmlString(), "<.*?>", string.Empty);
+
+    var rootPage = UmbracoContext.Content.GetAtRoot(false).FirstOrDefault() as OHome;
+    var isOnTheRootPage = rootPage?.Id == UmbracoContext.PublishedRequest.PublishedContent?.Id;
+    var minHeightStyle = isOnTheRootPage ? "calc(100vh - 100px)" : "250px";
+}
+
+
+<section class="top @homeBannerClass @(Model.OTitle == null ? "only_image" : "")" style="position: relative;">
+    @if (imageDesktop != "#")
+    {
+        <img src="@imageDesktop" class="video_fullscreen_Desktop" alt="@imageDesktopAltText"/>
+    }
+    @if (imageMobile != "#")
+    {
+        <img src="@imageMobile" class="video_fullscreen_Mobile" alt="@imageMobileAltText "/>
+    }
+    @if (videoDesktop != "#")
+    {
+        <video src="@videoDesktop" autoplay loop muted preload="metadata" class="video_fullscreen_Desktop" poster="@posterDesktop"></video>
+    }
+    @if (videoMobile != "#")
+    {
+        <video src="@videoMobile" autoplay loop muted preload="metadata" class="video_fullscreen_Mobile" poster="@posterMobile"></video>
+    }
+
+
+    <div class="container">
+        <div class="top__inner" style="min-height: @minHeightStyle">
+            <div class="top__content">
+                <h1 class="top__title" style="color: @(color)">@title</h1>
+                <ul class="top__list">
+                    @foreach (var description in Model.OItems)
+                    {
+                        <li>
+                            <p class="top__list-item">@description</p>
+                        </li>
+                    }
+                </ul>
+                @if (Model.OButton != null)
+                {
+                    <a class="top__button" href="@buttonUrl">
+                        <span>@Model.OButton.Name</span>
+                    </a>
+                }
+            </div>
+            @if (Model.OShowHonors)
+            {
+                <div class="top__banners">
+                    @foreach (var honor in  Model?.OHonors ?? Enumerable.Empty<OHonor>())
+                    {
+                        var link = honor.OLink?.Url ?? "#";
+                        <a href="@link">
+                            <img class="top__banner" src="@honor.OImage?.Url()" 
+                                 alt="Banner-@Model.OHonors.IndexOf(honor)">
+                        </a>
+                    }
+                </div>
+            }
+
+        </div>
+    </div>
+
+</section>

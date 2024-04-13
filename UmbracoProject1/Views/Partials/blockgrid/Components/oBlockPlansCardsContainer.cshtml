@@ -1,0 +1,14 @@
+﻿@using Umbraco.Cms.Core.Models.Blocks;
+@inherits UmbracoViewPage<BlockGridItem>
+@{
+    var content = (OBlockPlansCardsContainer)Model.Content;
+    var items = content.OCards.Select(item => item.Content);
+}
+
+<section class="support-plans oski-mb-2 oski-mt-2" id="support"
+    style="background-color: #@content.OBackgroundColor">
+    <div class="container">
+        <h3 class="support-plans__title">@content.OTitle</h3>
+        @await Html.PartialAsync("oskiPartials/OPlansCards", items)
+    </div>
+</section>

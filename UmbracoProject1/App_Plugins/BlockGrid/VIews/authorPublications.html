@@ -1,0 +1,6 @@
+﻿<div ng-click="block.edit()">
+    <h2 class="publications__title" ng-bind-html="block.data.oTitle"></h2>
+    <div ng-repeat="item in block.data.oPublications">
+        <h3 ng-bind-html="item.name"></h3>
+    </div>
+</div>

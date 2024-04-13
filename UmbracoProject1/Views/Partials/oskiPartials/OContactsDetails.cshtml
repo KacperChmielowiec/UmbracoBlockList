@@ -1,0 +1,38 @@
+﻿@using System.Text.RegularExpressions;
+@model IEnumerable<ODetailItem>
+
+@foreach (var detail in Model)
+{
+    <div class="contacts-container__details__detail">
+        <div class="contacts-container__details__detail__icon">
+            <img src="@detail.OIcon?.Url()" alt="@detail.OTitle">
+        </div>
+        <div class="contacts-container__details__detail__info">
+            <p class="contacts-container__details__detail__title">
+                @detail.OTitle
+            </p>
+            @{
+                var isEmail = Regex.IsMatch(detail.OText.ToString(), @"^\S+@\S+\.\S+$");
+                var isPhone = Regex.IsMatch(detail.OText.ToString(), @"^[\d\s\+\-\(\)]+$");
+            }
+            @if (isEmail)
+            {
+                <p class="contacts-container__details__detail__text">
+                    <a href="mailto:@detail.OText">@detail.OText</a>
+                </p>
+            }
+            else if (isPhone)
+            {
+                <p class="contacts-container__details__detail__text">
+                    <a href="tel:@detail.OText">@detail.OText</a>
+                </p>
+            }
+            else
+            {
+                <p class="contacts-container__details__detail__text">
+                    @detail.OText
+                </p>
+            }
+        </div>
+    </div>
+}

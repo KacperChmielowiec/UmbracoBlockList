@@ -1,0 +1,106 @@
+﻿@using Umbraco.Extensions
+@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage<Umbraco.Cms.Core.Models.Blocks.BlockGridItem>
+@using System.Text.RegularExpressions
+
+@{
+    var content = (OBlockFullScreenTopContainer)Model.Content;
+    var honors = content.OHonors.Select(block => block.Content).Cast<OHonor>();
+
+    var pattern = @"\w*.mp4|.ogg|.webm$";
+    var rgx = new Regex(pattern);
+    var imageOrVideoMobile = content.OImageOrVideoMobile ?? content.OImageOrVideoDesktop;
+    var buttonUrl = content.OButton?.Url ?? string.Empty;
+
+    var imageDesktopAltText = string.Empty;
+    var imageMobileAltText = string.Empty;
+
+
+    var imageMobile = "#";
+    var imageDesktop = "#";
+    var videoDesktop = "#";
+    var videoMobile = "#";
+    var posterMobile = "#";
+    var posterDesktop = "#";
+
+    if (content.OImageOrVideoMobile != null)
+    {
+        imageMobileAltText = Umbraco.Media(content.OImageOrVideoMobile.Key)!.Value("umbracoAltText")?.ToString();
+    }
+
+    if (content.OImageOrVideoDesktop != null)
+    {
+        imageDesktopAltText = Umbraco.Media(content.OImageOrVideoDesktop.Key)!.Value("umbracoAltText")?.ToString();
+        imageMobileAltText = string.IsNullOrWhiteSpace(imageMobileAltText) ? imageDesktopAltText + "Mobile" : imageMobileAltText;
+        (videoDesktop, imageDesktop) = rgx.IsMatch(content.OImageOrVideoDesktop.Url()) ? (content.OImageOrVideoDesktop.Url(), "#") : ("#", content.OImageOrVideoDesktop.Url());
+        (videoMobile, imageMobile) = rgx.IsMatch(imageOrVideoMobile.Url()) ? (imageOrVideoMobile.Url(), "#") : ("#", imageOrVideoMobile.Url());
+    }
+
+    var homeBannerClass = content.OShowHonors ? "top-honors" : string.Empty;
+
+    var color = content.OFontColor != null ? $"#{content.OFontColor}" : string.Empty;
+
+    var title = Regex.Replace(content.OTitle.ToHtmlString(), "<.*?>", string.Empty);
+
+    var rootPage = UmbracoContext.Content.GetAtRoot(false).FirstOrDefault() as OHome;
+    var isOnTheRootPage = rootPage?.Id == UmbracoContext.PublishedRequest.PublishedContent?.Id;
+    var minHeightStyle = isOnTheRootPage ? "calc(100vh - 100px)" : "250px";
+}
+
+<section class="top @homeBannerClass @(content.OTitle == null ? "only_image" : "")" style="position: relative;">
+    @if (imageDesktop != "#")
+    {
+        <img src="@imageDesktop" class="video_fullscreen_Desktop" alt="@imageDesktopAltText" />
+    }
+    @if (imageMobile != "#")
+    {
+        <img src="@imageMobile" class="video_fullscreen_Mobile" alt="@imageMobileAltText " />
+    }
+    @if (videoDesktop != "#")
+    {
+        <video src="@videoDesktop" autoplay loop muted preload="metadata" class="video_fullscreen_Desktop" poster="@posterDesktop"></video>
+    }
+    @if (videoMobile != "#")
+    {
+        <video src="@videoMobile" autoplay loop muted preload="metadata" class="video_fullscreen_Mobile" poster="@posterMobile"></video>
+    }
+
+
+    <div class="container">
+        <div class="top__inner" style="min-height: @minHeightStyle">
+            <div class="top__content">
+                <h1 class="top__title" style="color: @(color)">@title</h1>
+                <ul class="top__list">
+                    @foreach (var description in content.OItems)
+                    {
+                        <li>
+                            <p class="top__list-item">@description</p>
+                        </li>
+                    }
+                </ul>
+                @if (content.OButton != null)
+                {
+                    <a class="top__button" href="@buttonUrl">
+                        <span>@content.OButton.Name</span>
+                    </a>
+                }
+            </div>
+            @if (content.OShowHonors)
+            {
+                
+                <div class="top__banners">
+                    @foreach (var honor in honors)
+                    {
+                        var link = honor.OLink?.Url ?? "#";
+                        <a href="@link">
+                            <img class="top__banner" src="@honor.OImage?.Url()"
+                                 alt="Banner-@honors.IndexOf(honor)">
+                        </a>
+                    }
+                </div>
+            }
+
+        </div>
+    </div>
+
+</section>
+

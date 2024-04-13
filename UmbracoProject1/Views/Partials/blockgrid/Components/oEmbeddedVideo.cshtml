@@ -1,0 +1,36 @@
+﻿@using System.Text.RegularExpressions
+@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage<Umbraco.Cms.Core.Models.Blocks.BlockGridItem>
+@{
+    var content = (OEmbeddedVideo)Model.Content;
+    var height = content.OHeight == 0 ? 300 : content.OHeight;
+    var heightStyle = $"{height}px";
+
+    var isYoutubeVideo = content.OVideoUrl?.Url?.Contains("youtu");
+    var youtubeVideoUrl = string.Empty;
+    const string pattern = @"(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/watch\?v=|youtu\.be\/)([\w-]{11})";
+    var regex = new Regex(pattern);
+    var match = regex.Match(content.OVideoUrl?.Url ?? string.Empty);
+        
+    if (match.Success) {
+        youtubeVideoUrl = $"https://www.youtube.com/embed/{match.Groups[1].Value}?autoplay=1&mute=1";
+    }
+
+}
+
+<div class="videoContainer" style="height: @heightStyle">
+    @if (isYoutubeVideo.HasValue && isYoutubeVideo.Value)
+    {
+        <iframe src="@youtubeVideoUrl"
+                frameborder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowfullscreen>
+        </iframe>
+    }
+    else
+    {
+        <video controls autoplay>
+            <source src="@content.OVideoUrl?.Url" type="">
+            Your browser does not support the video tag.
+        </video>
+    }
+</div>

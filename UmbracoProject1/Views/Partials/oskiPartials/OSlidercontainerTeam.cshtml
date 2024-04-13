@@ -1,0 +1,129 @@
+﻿@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage<OSliderContainerTeam>
+@{
+    string imageType = Model.OImageType == "rectangle" ? "0" : "50%";
+    int team = 1;
+    int teamDetails = 1;
+}
+
+<main class="main">
+    <!-- New variant of "Team block" -->
+    <div class="new-team2">
+        <div class="container">
+            <h2 class="new-team2__title">@Model.OTitle</h2>
+            <p class="new-team2__description">@Model.OSubTitle</p>
+
+            <div class="new-team2__block">
+                <div class="new-team2__slider">
+                    @foreach (var slide in Model.OItems)
+                    {
+                        <div class="new-team2__slide new-slide" tabindex="0">
+
+                            @foreach (var item in slide.OItems)
+                            {
+                                if (item.OTeamLeader)
+                                {
+                                    <!--Team liader-->
+                                    <div class="new-slide__heading">
+                                        <div class="new-slide__heading-photo">
+                                            <img src="@(item.OImage?.Url() ?? "#")" alt="@item.OTitle">
+                                        </div>
+                                        <div class="new-slide__heading-info">
+                                            <p class="new-slide__heading-title">@item.OTitle</p>
+                                            <p class="new-slide__heading-description">@item.OSubTitle</p>
+                                            <div class="new-slide__heading-contacts">
+                                                @foreach (SocialLink link in item.OItems.OfType<SocialLink>())
+                                                {
+                                                    var linkUrl = link?.OUrl.FirstOrDefault()?.Url ?? "#";
+
+                                                    <a class="new-slide__heading-social" href="@linkUrl" target="@(link?.OUrl.First().Target)">
+                                                        @Html.Raw(System.IO.File.ReadAllText("wwwroot" + link.OIcon.Url()))
+                                                    </a>
+                                                }
+                                                @foreach (Email email in item.OItems.OfType<Email>())
+                                                {
+                                                    <a class="new-slide__heading-mail" href="mailto:@email.OTitle">@email.OTitle</a>
+                                                }
+
+                                                @foreach (var website in slide.OItems.OfType<WebsiteLink>())
+                                                {
+                                                    <a href="@website.OUrl" class="new-team__slide-email">@website.OTitle</a>
+                                                }
+
+                                                @foreach (var link in item.OItems.OfType<Link>())
+                                                {
+                                                    var styleLink = item.OItems.OfType<WebsiteLink>().Count() == 0 && item.OItems.OfType<Email>().Count() == 0 ? "new-team__slide-link" : "";
+                                                    <a class="new-team__slide-email" href="@(link.OLink.First()?.Url)" target="_blank">
+                                                        @styleLink">@(link?.OLink?.First().Name)
+                                                    </a>
+                                                }
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!--End Team liader-->
+                                }
+                            }
+                            <!--Team-->
+                            <p class="new-slide__subtitle">Team:</p>
+
+                            <div class="new-slide__team">
+                                @foreach (var item in slide.OItems)
+                                {
+                                    if (!item.OTeamLeader)
+                                    {
+                                        <div class="new-slide__team-item">
+                                            <div class="new-slide__team-photo">
+                                                <img src="@(item.OImage?.Url() ?? "#")" alt="@item.OTitle">
+                                            </div>
+                                            <button class="new-slide__team-details more-button" data-details="team-details-@team" type="button">
+                                                @item.OTitle
+                                                <svg width="12" height="8" viewBox="0 0 12 8" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                    <path d="M11.3536 4.35355C11.5488 4.15829 11.5488 3.84171 11.3536 3.64645L8.17157 0.464467C7.97631 0.269205 7.65973 0.269205 7.46447 0.464467C7.2692 0.659729 7.2692 0.976311 7.46447 1.17157L10.2929 4L7.46447 6.82843C7.2692 7.02369 7.2692 7.34027 7.46447 7.53553C7.65973 7.7308 7.97631 7.7308 8.17157 7.53553L11.3536 4.35355ZM-4.37114e-08 4.5L11 4.5L11 3.5L4.37114e-08 3.5L-4.37114e-08 4.5Z" />
+                                                </svg>
+                                            </button>
+                                        </div>
+                                        team++;
+                                    }
+                                }
+                            </div>
+                            <!--End Team-->
+                            <!--Team Details-->
+                            <div class="new-slide__members">
+                                @foreach (var item in slide.OItems)
+                                {
+                                    if (!item.OTeamLeader)
+                                    {
+                                        <div class="new-slide__members-wrap" data-tab="team-details-@teamDetails">
+                                            <div class="new-slide__members-item">
+                                                <div class="new-slide__members-data">
+                                                    <div class="new-slide__members-photo">
+                                                        <img src="@(item.OImage?.Url() ?? "#")" alt="@item.OTitle">
+                                                    </div>
+                                                    <button class="new-slide__team-details back-button" type="button">
+                                                        <svg width="12" height="8" viewBox="0 0 12 8" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                            <path d="M0.646446 4.35355C0.451184 4.15829 0.451184 3.84171 0.646446 3.64645L3.82843 0.464467C4.02369 0.269205 4.34027 0.269205 4.53553 0.464467C4.7308 0.659729 4.7308 0.976311 4.53553 1.17157L1.70711 4L4.53553 6.82843C4.7308 7.02369 4.7308 7.34027 4.53553 7.53553C4.34027 7.7308 4.02369 7.7308 3.82843 7.53553L0.646446 4.35355ZM12 4.5L1 4.5L1 3.5L12 3.5L12 4.5Z" />
+                                                        </svg>
+                                                        Back
+                                                    </button>
+                                                </div>
+                                                <div class="new-slide__members-description">
+                                                    <p class="new-slide__members-name">@item.OSubTitle</p>
+                                                    <div class="new-slide__members-experience">
+                                                        @foreach (var text in item.OStrings)
+                                                        {
+                                                            <p class="new-team__slide-text">@text</p>
+                                                        }
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        teamDetails++;
+                                    }
+                                }
+                            </div>   <!--End Team Details-->
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</main>

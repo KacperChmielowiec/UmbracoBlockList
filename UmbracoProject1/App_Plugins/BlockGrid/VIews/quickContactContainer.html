@@ -1,0 +1,15 @@
+﻿<section class="call_to_action oski-mb-3 oski-mt-3" ng-click="block.edit()">
+    <div class="container">
+        <div class="action__element">
+            <h3 class="action__title">{{block.data.oTitle}}</h3>
+            <p class="action__text">{{block.data.oSubTitle}}</p>
+            <form id="contactForm" class="contact__form">
+                <input class="contact__form-input" type="text" name="name" placeholder="Name" required>
+                <input class="contact__form-input" style="display:none;" type="text" name="name" placeholder="Name" value="Quick Contact Form" required>
+                <input class="contact__form-input" type="email" name="email" placeholder="E-mail" required>
+                <textarea name="message" class="contact__form-message" placeholder="{{block.data.oPlaceholderForMessage}}" required></textarea>
+                <button class="contact__form-button" type="submit" id="submit-contact">{{block.data.oButtonName}}</button>
+            </form>
+        </div>
+    </div>
+</section>

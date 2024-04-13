@@ -1,0 +1,19 @@
+﻿<section class="contact oski-pb-2 oski-pt-2" id="contact" ng-click="block.edit()">
+    <div class="container">
+        <h3 class="contact__title section-title">{{block.data.oTitle}}</h3>
+        <p class="contact__text">{{block.data.oSubTitle}}</p>
+        <form class="contact__form">
+            <input class="contact__form-input" style="display: none" type="text" name="subject" value="{{block.data.oSubject}}" required>
+            <input class="contact__form-input" style="display: none" type="email" name="toEmail" value="{{block.data.oEmail}}" required>
+
+            <input class="contact__form-input" type="text" name="name" placeholder="Name" required>
+            <input class="contact__form-input" type="email" name="email" placeholder="E-mail" required>
+         
+            <input ng-if="block.data.showPhoneNumber" class="contact__form-input" type="tel" name="phone" placeholder="Phone" required>
+            <textarea name="message" class="contact__form-message" placeholder="{{block.data.oPlaceholderForMessage}}" required></textarea>
+            <button class="contact__form-button" type="submit" id="submit-contact">{{block.data.oButtonName}}</button>
+        </form>
+
+    </div>
+
+</section>

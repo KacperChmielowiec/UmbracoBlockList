@@ -1,0 +1,10 @@
+﻿@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage<Umbraco.Cms.Core.Models.Blocks.BlockGridItem>
+@{
+    var content = (OMarginsBlock)Model.Content;
+    var marginTop = $"{content.OMarginTop}%";
+    var marginBottom = $"{content.OMarginBottom}%";
+    var marginLeft = $"{content.OMarginLeft}%";
+    var marginRight = $"{content.OMarginRight}%";
+}
+<div style="margin: @marginTop @marginRight @marginBottom @marginLeft">
+</div>

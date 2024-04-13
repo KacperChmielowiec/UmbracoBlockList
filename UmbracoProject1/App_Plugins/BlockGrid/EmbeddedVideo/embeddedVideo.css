@@ -1,0 +1,4 @@
+.videoContainer iframe, .videoContainer video {
+    width: 100%;
+    min-height: 300px;
+}

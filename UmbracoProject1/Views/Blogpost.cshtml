@@ -1,0 +1,103 @@
+﻿@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage<OBlogpost>
+@using Oski.Core.Helpers;
+@using Umbraco.Cms.Core.Services
+@inject IUserService UserService;
+@{
+    Layout = "Main.cshtml";
+    var parentNode = Model.Parent is OBlog ? Model.Parent : Model;
+    var blog = Model.Parent as OBlog;
+    var configBlog  = blog.ConfigBlog;
+    var showSocialInPost = configBlog.Any(a => a == "Show social in post");
+    var showAuthorAndReadTime = configBlog.Any(a => a == "Show author and read time");
+    var showSideMenu = configBlog.Any(a => a == "Show side menu");
+    var altText = Umbraco.Media(Model.OPreviewImage.Key)!.Value("umbracoAltText")?.ToString();
+    var request = Context.Request;
+    var scheme = request.Scheme;
+    var host = request.Host;
+    var path = request.Path;
+    var queryString = request.QueryString;
+    var currentUrl = $"{scheme}://{host}{path}{queryString}";
+
+    var author = UserService.GetUserById(Convert.ToInt32(Model?.OAuthor));
+    var (authorPage, authorAvatar) = Model.GetAuthorPageAndAvatar(author);
+}
+
+<main class="inner-page">
+    @await Html.PartialAsync("oskiPartials/OFullScreenTopContainer", parentNode)
+
+    <section class="content blogpost-content">
+        <div class="container">
+            <div class="content__inner">
+                @if (showSideMenu)
+                {
+                    @await Html.PartialAsync("oskiPartials/oCategoriesMenuForNews", Model.Parent)
+                }
+                <div class="content-info">
+                    <div>
+                        @await Html.PartialAsync("oskiPartials/OBreadcrumb")
+                    </div>
+                    <div>
+                        @if (showAuthorAndReadTime)
+                        {
+                            <div class="blogpost-header">
+                                <div>
+                                    <img src="@authorAvatar" alt="@author?.Name" />
+                                    <span>
+                                        <a href="@authorPage"
+                                           class="author__link">@author?.Name</a>
+                                    </span> | @Model.CreateDate.ToString("MMMM d, yyyy")
+                                </div>
+                                <div>
+                                    @{
+                                        var readTime = CalculationTime.CalculateReadTime(Model.OContent);
+                                    }
+                                    Read Time: <span class="blogpost-footer__time">@readTime min</span>
+                                </div>
+                            </div>
+                        }
+                        @if (Model.OPreviewImage != null && !Model.OHidePreviewImageInPost)
+                        {
+                            <div class="blogpost-main-image oski-mb-3 oski-mt-1">
+                                <img src="@Model.OPreviewImage.Url()" alt="@altText"/>
+                            </div>
+                        }
+                        <div class="blogpost-title">
+                            <h1>@Model.OTitle</h1></div>
+                        @foreach (var item in Model.OContent)
+                        {
+                            var type = item.GetType().Name;
+                            @await Html.PartialAsync($"oskiPartials/{type}", item, new ViewDataDictionary(ViewData) { { "name", Model.Name }, { "isParentPage", !(Model.Parent is OGenericAboutPage) } })
+                        }
+                    </div>
+                    @if (showSocialInPost)
+                    {
+                        @if (Model.OTags.Any())
+                        {
+                            <div class="blogpost-news-item-tags oski-mt-2">
+                                @foreach (var tag in Model.OTags)
+                                {
+                                    <a class="blogpost-tag" href="@(Model.Parent.Url() + $"?tag={tag}")">@tag</a>
+
+                                }
+                            </div>
+                        }
+                        @if (blog.ShareLinks.Any())
+                        {
+                            <div class="blogpost-share-social-container">
+                                @foreach (SocialLink link in blog.ShareLinks)
+                                {
+                                    var shareLink = link.OUrl.First().Name + currentUrl;
+
+                                    <a href="@shareLink" class="blogpost-share-social-item" title="Share on @link.OSocialNetworkName">
+                                        @Html.Raw(System.IO.File.ReadAllText("wwwroot" + link.OIcon.Url()))
+                                        @link.OSocialNetworkName
+                                    </a>
+                                }
+                            </div>
+                        }
+                    }
+                </div>
+            </div>
+        </div>
+    </section>
+</main>

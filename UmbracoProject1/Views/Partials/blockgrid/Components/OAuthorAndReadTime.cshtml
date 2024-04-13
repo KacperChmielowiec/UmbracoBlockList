@@ -1,0 +1,29 @@
+﻿@using Oski.Core.Helpers
+@using Umbraco.Cms.Core.Services
+@inject IUserService UserService;
+@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage<Umbraco.Cms.Core.Models.Blocks.BlockGridItem>
+@{
+    var currentPage = (BlockGridPage)ViewBag.CurrentPage;
+    var content = (OAuthorAndReadTime)Model.Content;
+    var showAuthorAndReadTime = (bool?)ViewBag.ShowAuthorAndReadTime;
+    var author = UserService.GetUserById(Convert.ToInt32(content.OAuthor));
+    var (authorPage, authorAvatar) = currentPage.GetAuthorPageAndAvatar(author);
+    var readTime = CalculationTime.CalculateReadTime(currentPage.BlogGrid);
+}
+@if (showAuthorAndReadTime.HasValue && showAuthorAndReadTime.Value)
+{
+    <div class="oski-mb-1">
+        <div class="blogpost-header">
+            <div>
+                <img src="@authorAvatar" alt="@author?.Name" />
+                <span>
+                    <a href="@authorPage"
+                       class="author__link">@author?.Name</a>
+                </span> | @currentPage.CreateDate.ToString("MMMM d, yyyy")
+            </div>
+            <div>
+                Read Time: <span class="blogpost-footer__time">@readTime min</span>
+            </div>
+        </div>
+    </div>
+}

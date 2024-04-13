@@ -1,0 +1,10 @@
+﻿@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage<OContactsContainer>
+
+<section class="contacts-container oski-mb-4 oski-mt-4">
+    <div class="contacts-container__inner">
+        <h2 class="contacts-container__title">@Model.OTitle</h2>
+        <div class="contacts-container__details">
+            @await Html.PartialAsync("oskiPartials/OContactsDetails", Model.ODetails)
+        </div>
+    </div>
+</section>

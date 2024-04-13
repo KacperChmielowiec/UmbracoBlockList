@@ -1,0 +1,8 @@
+﻿@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage<Umbraco.Cms.Core.Models.Blocks.BlockGridItem>
+@{
+    var content = (OFullBleed)Model.Content;
+    var textColor = content.OTextColor ?? "black";
+}
+<div class="full-bleed" style="background-color: @content.OBackgroundColor; color:@textColor; padding: 3%;">
+    @await  Html.GetBlockGridItemAreasHtmlAsync(Model)
+</div>

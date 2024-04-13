@@ -1,0 +1,14 @@
+﻿@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage<Umbraco.Cms.Core.Models.Blocks.BlockGridItem>
+@{
+    var content = (OSocialMediaLinks)Model.Content;
+    var links = content.OLinks.Select(bi => bi.Content).Cast<SocialLink>();
+}
+<div class="social-links--container">
+    @foreach (var link in links)
+    {
+        <a href="@link.OUrl.First().Name" class="blogpost-share-social-item" title="Share on @link.OSocialNetworkName">
+            @Html.Raw(System.IO.File.ReadAllText("wwwroot" + link.OIcon.Url()))
+            @link.OSocialNetworkName
+        </a>
+    }
+</div>

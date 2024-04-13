@@ -1,0 +1,76 @@
+﻿@using Oski.Core.Helpers
+@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage<Umbraco.Cms.Core.Models.Blocks.BlockGridItem>
+
+@{
+    var content = (OAuthorsPublications)Model.Content;
+    var currentPage = (IPublishedContent)ViewBag.CurrentPage;
+    var authorId = content.OAuthor;
+    var publications = Enumerable.Empty<IPublishedContent>();
+
+    if (authorId != null)
+    {
+        publications = ContentAuthorHelper.GetAuthorPublications(currentPage, Convert.ToInt32(authorId));
+    }
+    else
+    {
+        publications = content.OPublications?.Select(p => UmbracoContext.Content.GetByRoute(p.Url));
+    }
+
+    publications = publications.OrderByDescending(publication => publication.CreateDate).Take(content.OPublicationsLimit);
+}
+
+<section class="publications">
+    <h2 class="publications__title">@content.OTitle</h2>
+    <div class="publications__list">
+        @foreach (var publication in publications)
+        {
+            var readTime = 0d;
+            var imageUrl = string.Empty;
+
+            switch (publication)
+            {
+                case OBlogpost blogPost:
+                {
+                    readTime = CalculationTime.CalculateReadTime(blogPost.OContent);
+                    imageUrl = blogPost.OPreviewImage?.Url();
+                    break;
+                }
+                case BlockGridPage blockGridPage:
+                {
+                    var gridAreas = blockGridPage.BlogGrid.SelectMany(c => c.Areas).Select(a => a.FirstOrDefault());
+                    var gridItem = gridAreas
+                        .FirstOrDefault(a => string.Equals(a.Content.ContentType.Alias, nameof(OFullScreenBlockImage), StringComparison.CurrentCultureIgnoreCase) || string.Equals(a.Content.ContentType.Alias, nameof(OBlockImage), StringComparison.CurrentCultureIgnoreCase));
+
+                    if (gridItem is { Content: IOBlockImage image })
+                    {
+                        imageUrl = image.OImage?.Url();
+                    }
+
+                    if (string.IsNullOrEmpty(imageUrl))
+                    {
+                        var previewBlockContent = blockGridPage.BlogGrid.FirstOrDefault(b => b.Content.ContentType.Alias == OBlogPostPreviewBlock.ModelTypeAlias)?.Content;
+                        var blogPostPreviewBlock = previewBlockContent as OBlogPostPreviewBlock;
+                        imageUrl = blogPostPreviewBlock?.OPreviewImage?.Url();
+                    }
+                    readTime = CalculationTime.CalculateReadTime(blockGridPage.BlogGrid);
+                    break;
+                }
+            }
+
+            <a href="@publication.Url()">
+                <div class="publication">
+                    <div class="publication__image">
+                        <img src="@imageUrl" />
+                    </div>
+                    <div class="publication__info">
+                        <p class="publication__name">@publication.Name</p>
+                        <div class="publication__info__bottom">
+                            <p>@publication.CreateDate.ToString("MMMM d, yyyy")</p>
+                            <p>Read Time: <span class="blogpost-footer__time">@readTime min</span></p>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        }
+    </div>
+</section>

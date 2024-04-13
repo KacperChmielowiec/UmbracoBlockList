@@ -1,0 +1,35 @@
+﻿@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage<OGenericAboutPage>
+@{
+    Layout = "Main.cshtml";
+    var sidebarNode = Model.Parent is OGenericAboutPage ? Model.Parent : Model;
+    var pageContentFirst = Model.OPageContent.FirstOrDefault() is OFullScreenTopContainer ? Model.OPageContent.First() : null;
+    var pageContentList = Model.OPageContent;
+}
+<main class="inner-page">
+    @if (pageContentFirst != null)
+    {
+        @await Html.PartialAsync("oskiPartials/oFullScreenTopContainer", pageContentFirst)
+        pageContentList = Model.OPageContent.Skip(1);
+    }
+    <section class="content fullscreen-content">
+        <div class="container">
+            <div class="content__inner">
+                @await Umbraco.RenderMacroAsync("MenuForAllBlogs",
+                    new
+                    {
+                        oCurrentUrl = Model.Url(),
+                        oParentPage = sidebarNode.Id,
+                        oDisplayCreationDate = false
+                    })
+                <div class="content-info">
+                    @await Html.PartialAsync("oskiPartials/OBreadcrumb")
+                    @foreach (var item in pageContentList)
+                    {
+                        var type = item.GetType().Name;
+                        @await Html.PartialAsync($"oskiPartials/{type}", item, new ViewDataDictionary(ViewData) {{"name", Model.Name}, {"isParentPage", Model.Parent is not OGenericAboutPage}})
+                    }
+                </div>
+            </div>
+        </div>
+    </section>
+</main>

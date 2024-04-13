@@ -1,0 +1,4 @@
+<section class="rich_text_editor" ng-controller="richTextEditorController" ng-click="block.edit()">
+    <div class="container block-rte" ng-bind-html="trustAsHtml(block.data.text)" style="color: #{{block.data.oTextColor.value}};">
+    </div>
+</section>

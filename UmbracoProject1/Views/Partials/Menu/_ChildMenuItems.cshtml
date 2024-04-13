@@ -1,0 +1,40 @@
+﻿@model OHeaderMenuItem
+
+@{
+    var linkUrl = Model?.OLink?.Url ?? "#";
+    var linkName = Model?.OLink?.Name ?? "Read more";
+}
+<div class="header__menu__item__children__wrap">
+    <div class="header__menu__item__children">
+        <div class="header__menu__item__children__left">
+            <div class="header__menu__item__children__title">
+                @Model.OCaption
+            </div>
+            <div class="header__menu__item__children__description">
+                @Model.ODescription
+            </div>
+
+            @if (Model.OShowLinkAsAbutton)
+            {
+                <a href="@linkUrl" class="header__menu__item__children__button">
+                    <p>@linkName</p>
+                    <img src="~/Content/images/button_arrow.svg">
+                </a>
+            }
+            else
+            {
+                <a href="@linkUrl" class="header__menu__item__children__link">
+                    <p>@linkName</p>
+                    <div class="header__menu__item__children__link__icon"></div>
+                </a>
+            }
+        </div>
+        <div class="header__menu__item__children__right">
+            @foreach (var child in Model.OChildMenuItems)
+            {
+                @await Html.PartialAsync("Menu/_NestedChildMenuItems", child)
+            }
+        </div>
+    </div>
+</div>
+

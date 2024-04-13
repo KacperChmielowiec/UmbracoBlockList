@@ -1,0 +1,9 @@
+﻿@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage<OPlansCardsContainer>
+
+<section class="support-plans oski-mt-4 oski-mb-4" id="support"
+    style="background-color: #@Model.OBackgroundColor">
+    <div class="container">
+        <h3 class="support-plans__title">@Model.OTitle</h3>
+        @await Html.PartialAsync("oskiPartials/OPlansCards", Model.OItems)
+    </div>
+</section>

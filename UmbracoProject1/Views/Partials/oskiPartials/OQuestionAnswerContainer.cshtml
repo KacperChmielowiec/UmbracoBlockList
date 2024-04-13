@@ -1,0 +1,9 @@
+﻿@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage<OQuestionAnswerContainer>
+@{
+    var items = Model.OItems;
+}
+<section class="works oski-pb-4 oski-pt-4">
+    <h3 class="works__title">@Model.OTitle</h3>
+    @await Html.PartialAsync("OQuestionAndAnswer", items)
+</section>
+

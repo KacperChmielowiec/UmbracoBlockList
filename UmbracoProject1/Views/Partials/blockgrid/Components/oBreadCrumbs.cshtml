@@ -1,0 +1,13 @@
+﻿@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage<Umbraco.Cms.Core.Models.Blocks.BlockGridItem>
+@{
+    var parentNode = ViewBag.ParentPage;
+    var startNode = (IPublishedContent)ViewBag.CurrentPage;
+}
+<ul class="breadcrumb">
+
+    @foreach (var level in startNode.Ancestors().Where(x => !(x is BlockGridPage bgPage) || bgPage?.BlogGrid.Count > 0).Reverse())
+    {
+        <li><a href="@level.Url()">@level.Name</a><span>/</span></li>
+    }
+    <li>@startNode.Name</li>
+</ul>

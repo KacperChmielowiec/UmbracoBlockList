@@ -1,0 +1,60 @@
+﻿@model IEnumerable<Slide>
+@{
+    var numberOfSlides = (int)ViewBag.ONumberOfSlides;
+    var imageType = (string)ViewBag.OImageType;
+}
+
+<div class="new-team__slider" data-slides-show="@numberOfSlides">
+    @foreach (var slide in Model)
+    {
+        var links = slide.OItems.ToList();
+
+        <div class="new-team__slide">
+            <div class="new-team__slide-content">
+                <div class="new-team__slide-pictures">
+                    <div class="new-team__slide-image" style="border-radius: @imageType;">
+                        <img src="@(slide.OImage?.Url() ?? "#")" alt="@slide.OTitle">
+                    </div>
+                </div>
+                <span class="new-team__slide-name">@slide.OTitle</span>
+                <p class="new-team__slide-position">@slide.OSubTitle</p>
+                <div class="new-team__slide-info">
+                    @foreach (var text in slide.OStrings)
+                    {
+                        <p class="new-team__slide-text">@text</p>
+                    }
+                </div>
+                <div class="new-team__slide-contacts">
+
+                    @foreach (var website in links.OfType<WebsiteLink>())
+                    {
+                        <a href="@website.OUrl" class="new-team__slide-email">@website.OTitle</a>
+                    }
+
+                    @foreach (var link in links.OfType<Link>())
+                    {
+                        var styleLink = !links.OfType<WebsiteLink>().Any() && !slide.OItems.OfType<Email>().Any() ? "new-team__slide-link" : "";
+                        <a href="@(link.OLink?.First()?.Url)" class="new-team__slide-email @styleLink">@(link?.OTitle)</a>
+                    }
+
+                    @foreach (var email in links.OfType<Email>())
+                    {
+                        <a href="mailto:@email.OMail" class="new-team__slide-email">@email.OTitle</a>
+                    }
+
+                    <div class="new-team__slide-socials">
+
+                        @foreach (var link in links.OfType<SocialLink>())
+                        {
+                            var linkUrl = link.OUrl?.FirstOrDefault()?.Url ?? "#";
+
+                            <a class="new-team__slide-social" href="@linkUrl" target="@(link.OUrl?.First()?.Target)">
+                                @Html.Raw(await System.IO.File.ReadAllTextAsync("wwwroot" + link.OIcon?.Url()))
+                            </a>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>

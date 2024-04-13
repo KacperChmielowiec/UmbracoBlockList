@@ -1,0 +1,9 @@
+﻿@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage<Umbraco.Cms.Core.Models.Blocks.BlockGridItem>
+@{
+    var content = (OFullScreenBlockImage)Model.Content;
+    var borderRadius = $"{content.OBorderRadius}px";
+    var height = content.OHeight == 0 ? 500 : content.OHeight;
+    var imageHeight = $"{height}px";
+}
+<img class="full-img block-image-container" src="@content.OImage?.Url()" alt="@content.OImage?.Name" style="border-radius: @borderRadius;height: @imageHeight" />
+

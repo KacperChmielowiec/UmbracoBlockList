@@ -1,0 +1,10 @@
+﻿@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage<Umbraco.Cms.Core.Models.Blocks.BlockGridItem>
+@{
+    var content = (OBlockQuestionAnswerContainer)Model.Content;
+    var items = content.OItems.Select(item => item.Content).Cast<OQuestionAnswer>();
+
+}
+<section class="works oski-pb-2 oski-pt-2 oski-mb-2 oski-mt-2">
+    <h3 class="works__title">@content.OTitle</h3>
+    @await Html.PartialAsync("oskiPartials/OQuestionAndAnswer", items)
+</section>

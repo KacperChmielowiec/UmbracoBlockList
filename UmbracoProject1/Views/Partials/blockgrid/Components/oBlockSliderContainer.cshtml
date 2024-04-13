@@ -1,0 +1,71 @@
+﻿@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage<Umbraco.Cms.Core.Models.Blocks.BlockGridItem>
+@{
+    var content = (OBlockSliderContainer)Model.Content;
+    var imageType = content.OImageType == "rectangle" ? "0" : "50%";
+    var slides = content.OSlides.Select(s => s.Content).Cast<OBlockSlide>();
+}
+
+<section class="new-team oski-mb-2 oski-mt-2" id="team">
+    <div class="container">
+        <h3 class="new-team__title section-title">@content.OTitle</h3>
+        <p class="new-team__text">@content.OSubTitle</p>
+        <div class="new-team__slider" data-slides-show="@content.ONumberOfSlides">
+            @foreach (var slide in slides)
+            {
+                var links = slide.OItems?.Select(i => i.Content)?.ToList();
+
+                <div class="new-team__slide">
+                    <div class="new-team__slide-content">
+                        <div class="new-team__slide-pictures">
+                            <div class="new-team__slide-image" style="border-radius: @imageType;">
+                                <img src="@(slide.OImage?.Url() ?? "#")" alt="@slide.OTitle">
+                            </div>
+                        </div>
+                        <span class="new-team__slide-name">@slide.OTitle</span>
+                        <p class="new-team__slide-position">@slide.OSubTitle</p>
+                        <div class="new-team__slide-info">
+                            @foreach (var text in slide.OStrings)
+                            {
+                                <p class="new-team__slide-text">@text</p>
+                            }
+                        </div>
+                        <div class="new-team__slide-contacts">
+
+                            @foreach (var website in links.OfType<WebsiteLink>())
+                            {
+                                <a href="@website.OUrl" class="new-team__slide-email">@website.OTitle</a>
+                            }
+
+                            @foreach (var link in links.OfType<Link>())
+                            {
+                                var styleLink = !slide.OItems.OfType<WebsiteLink>().Any() && !slide.OItems.OfType<Email>().Any() ? "new-team__slide-link" : "";
+                                <a href="@(link.OLink.First()?.Url)" class="new-team__slide-email @styleLink">@(link?.OTitle)</a>
+                            }
+
+                            @foreach (var email in links.OfType<Email>())
+                            {
+                                <a href="mailto:@email.OMail" class="new-team__slide-email">@email.OTitle</a>
+                            }
+
+                            <div class="new-team__slide-socials">
+
+                                @foreach (var link in links.OfType<SocialLink>())
+                                {
+                                    var linkUrl = link.OUrl?.FirstOrDefault()?.Url ?? "#";
+
+                                <a class="new-team__slide-social" href="@linkUrl" target="@(link.OUrl?.First()?.Target)">
+                                    @Html.Raw(await System.IO.File.ReadAllTextAsync("wwwroot" + link.OIcon?.Url()))
+                                </a>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+        @if (!string.IsNullOrWhiteSpace(content.OButtonName) && !string.IsNullOrWhiteSpace(content.OButtonUrl?.Url))
+        {
+            <a class="new-team__link" href="@content.OButtonUrl.Url">@content.OButtonName</a>
+        }
+    </div>
+</section>

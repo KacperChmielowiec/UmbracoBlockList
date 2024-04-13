@@ -1,0 +1,20 @@
+﻿@inherits UmbracoViewPage<ODetailsContainer>
+@{
+    (var display, var direction) = Model.ODetailsPositioning switch
+    {
+        "grid" => ("grid", string.Empty),
+        "flex-column" => ("flex", "column"),
+        _ => ("flex", "column")
+    };
+}
+
+<section class="details-container oski-mb-4 oski-mt-4">
+    <div class="details-container__inner @Model.ODirection" style="flex-direction: @Model.ODirection">
+        <h2 class="details-container__inner__title">
+            @Model.OTitle
+        </h2>
+        <div class="details-container__inner__details @display" style="display: @display; flex-direction: @direction">
+           @await Html.PartialAsync("oskiPartials/ODetails", Model.ODetails)
+        </div>
+    </div>
+</section>

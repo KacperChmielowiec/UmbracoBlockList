@@ -1,0 +1,10 @@
+﻿@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage<OImageContainer>
+
+@{
+    var imageUrl = Model.OImage?.Url();
+    var imageAltText = Umbraco.Media(Model.OImage!.Id)!.Value("umbracoAltText")?.ToString();
+    var borderRadius = $"{Model.OBorderRadius}px";
+}
+<section class="image-container oski-mb-3 oski-mt-3">
+    <img src="@imageUrl" alt="@imageAltText" style="width: 100%; border-radius: @borderRadius"/>
+</section>

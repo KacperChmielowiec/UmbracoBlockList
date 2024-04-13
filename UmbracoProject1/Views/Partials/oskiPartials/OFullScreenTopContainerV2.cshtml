@@ -1,0 +1,12 @@
+﻿@inherits UmbracoViewPage<OFullScreenTopContainerV2>
+
+<section class="top-new" style="background-image: url(@Model.OBackgroundImage?.Url())">
+    <div class="top-new__info">
+        <h1 class="top-new__title">@Model.OTitle</h1>
+        <p class="top-new__text">@Model.OText</p>
+        @if (Model.OButton != null)
+        {
+            <a class="top-new__button" href="@Model.OButton.Url">@Model.OButton.Name</a>
+        }
+    </div>
+</section>

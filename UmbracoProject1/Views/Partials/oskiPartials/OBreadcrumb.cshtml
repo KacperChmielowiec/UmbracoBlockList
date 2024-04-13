@@ -1,0 +1,8 @@
+﻿@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage
+<ul class="breadcrumb">
+    @foreach (var level in @Model.Ancestors().Reverse())
+    {
+        <li><a href="@level.Url()">@level.Name</a><span>/</span></li>
+    }
+    <li>@Model.Name</li>
+</ul>

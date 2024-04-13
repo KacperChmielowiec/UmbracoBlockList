@@ -1,0 +1,14 @@
+﻿@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage<Umbraco.Cms.Core.Models.Blocks.BlockGridItem>
+@{
+    var image = (OBlockImage)Model.Content;
+    var borderRadius = $"{image.OBorderRadius}px";
+    var height = image.OHeight == 0 ? 500 : image.OHeight;
+    var imageHeight = $"{height}px";
+    var style = image.OIsCircle ? "circle-image" : "block-image";
+}
+<div class="@(image.OIsCircle ? "center" : string.Empty) block-image-container">
+    <img src="@image.OImage?.Url()" alt="@image.OImage?.Name" 
+         class="@style"
+         style="border-radius: @(image.OIsCircle ? string.Empty : borderRadius);
+            max-height: @(image.OIsCircle ? string.Empty : imageHeight)" />
+</div>

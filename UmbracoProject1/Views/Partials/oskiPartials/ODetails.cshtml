@@ -1,0 +1,41 @@
+﻿@model IEnumerable<ODetailItem>
+
+@foreach (var detail in Model)
+{
+    var detailDirection = string.IsNullOrEmpty(detail.ODirection) ? "row" : detail.ODirection;
+
+    @if (detail.OLink != null)
+    {
+        <a class="details-container__inner__details__link" href=" @detail.OLink.Url">
+            <div class="details-container__inner__details__detail @detailDirection">
+                <div class="details-container__inner__details__detail__icon">
+                    <img src="@detail.OIcon?.Url()" alt="@detail.OTitle">
+                </div>
+                <div class="details-container__inner__details__detail__info">
+                    <p class="details-container__inner__details__link__title">
+                        @detail.OTitle
+                    </p>
+                    <p class="details-container__inner__details__detail__info__text">
+                        @detail.OText
+                    </p>
+                </div>
+            </div>
+        </a>
+    }
+    else
+    {
+        <div class="details-container__inner__details__detail @detailDirection">
+            <div class="details-container__inner__details__detail__icon">
+                <img src="@detail.OIcon?.Url()" alt="@detail.OTitle">
+            </div>
+            <div class="details-container__inner__details__detail__info">
+                <p class="details-container__inner__details__detail__info__title">
+                    @detail.OTitle
+                </p>
+                <p class="details-container__inner__details__detail__info__text">
+                    @detail.OText
+                </p>
+            </div>
+        </div>
+    }
+}

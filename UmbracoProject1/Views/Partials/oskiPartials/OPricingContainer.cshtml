@@ -1,0 +1,19 @@
+﻿@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage<OPricingContainer>
+@{
+}
+<section class="pricing-model">
+    <div class="container">
+        <div class="pricing-model__inner">
+            <h2 class="pricing-model__title section-title">@Model.OTitle</h2>
+            <div class="pricing-model__block">
+                <img class="pricing-model__image" src="@Model?.OImage?.Url()" alt="Section image">
+                <ul class="pricing-model__list">
+                    @foreach (var item in Model.OItems.Select((value, index) => new { index, value }))
+                    {
+                        <li class="pricing-model__list-item item@(item.index + 1)">@item.value</li>
+                    }
+                </ul>
+            </div>
+        </div>
+    </div>
+</section>

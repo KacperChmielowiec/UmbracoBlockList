@@ -1,0 +1,24 @@
+﻿@model OHeaderMenuItem
+@{
+    var childLinkUrl = Model?.OLink?.Url ?? "#";
+}
+
+@if (Model.OChildMenuItems.Any())
+{
+    <div>
+        <div class="header__menu__item__children__item">
+            <a href="@childLinkUrl" class="@(ViewData["url"].ToString().Equals(childLinkUrl) ? "header__menu-link--active" : "")">@Model.OCaption</a>
+        </div>
+        <div class="header__menu__item__children__item__nested-children">
+            @foreach (var nestedChild in Model.OChildMenuItems)
+            {
+                var nestedChildLinkUrl = nestedChild?.OLink?.Url ?? "#";
+                <a href="@nestedChildLinkUrl" class="header__menu__item__children__item__nested-children__item @(ViewData["url"].ToString().Equals(nestedChildLinkUrl) ? "header__menu-link--active" : "")">@nestedChild.OCaption</a>
+            }
+        </div>
+    </div>
+}
+else
+{
+    <a href="@childLinkUrl" class="header__menu__item__children__item @(ViewData["url"].ToString().Equals(childLinkUrl) ? "header__menu-link--active" : "")">@Model.OCaption</a>
+}

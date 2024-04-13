@@ -1,0 +1,5 @@
+﻿@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage<Umbraco.Cms.Core.Models.Blocks.BlockGridItem>
+@{
+    var content = (OContactContainerV2)Model.Content;
+}
+@await Html.PartialAsync("oskiPartials/OContactContainerV2", content)

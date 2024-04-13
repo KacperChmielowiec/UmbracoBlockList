@@ -1,0 +1,30 @@
+﻿@inherits UmbracoViewPage<OContactContainerV2>
+
+
+<section class="contact-container-new oski-mb-4 oski-mt-4" id="contact">
+     <h2 class="contact-container-new__title">@Model.OTitle</h2>
+
+        <form action="/Umbraco/Surface/Contact/SendMessage" method="POST" id="contactForm" class="contact-container-new__form">
+            @Html.AntiForgeryToken()
+
+            <div class="contact__success-answer ">
+                @Umbraco.GetDictionaryValue("ContactForm.SuccessMessage", "Message was sent sucessfully.")
+            </div>
+            <div class="contact__error-answer">
+                @Umbraco.GetDictionaryValue("ContactForm.UnsuccessMessage", "Message not sent.")
+            </div>
+            
+            <input style="display: none" type="text" name="subject" value="@Model.OSubject" required>
+            <input style="display: none" type="email" name="toEmail" value="@Model.OEmail" required>
+
+            <div class="contact-container-new__form__first">
+                <input class="contact-container-new__form__input" type="text" name="name" placeholder="Name" required>
+                <input class="contact-container-new__form__input" type="email" name="email" placeholder="E-mail" required>
+            </div>
+           
+            <input class="contact-container-new__form__input" type="text" name="site" placeholder="Your Site" required>
+            <textarea name="message" class="contact-container-new__form__message" placeholder="Message" required></textarea>
+
+            <button class="contact-container-new__form__button" type="submit" id="submit-contact">@Model.OButtonName</button>
+        </form>
+</section>

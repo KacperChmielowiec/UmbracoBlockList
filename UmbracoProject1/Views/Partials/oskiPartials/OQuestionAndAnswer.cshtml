@@ -1,0 +1,15 @@
+﻿@model IEnumerable<OQuestionAnswer>
+
+<div class="works__accordion">
+    @foreach (var item in Model)
+    {
+        <div class="accordion__item">
+            <h4 class="accordion__question">
+                @item.OQuestion
+            </h4>
+            <p class="accordion__answer">
+                @item.OAnswer 
+            </p>
+        </div>
+    }
+</div>

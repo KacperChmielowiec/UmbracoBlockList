@@ -1,0 +1,14 @@
+﻿@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage<Umbraco.Cms.Core.Models.Blocks.BlockGridItem>
+@{
+    var content = (OBlockContactsContainer)Model.Content;
+    var details = content.ODetails.Select(d => d.Content).Cast<ODetailItem>();
+}
+
+<section class="contacts-container oski-mt-2 oski-mb-2">
+    <div class="contacts-container__inner">
+        <h2 class="contacts-container__title">@content.OTitle</h2>
+        <div class="contacts-container__details">
+            @await Html.PartialAsync("oskiPartials/OContactsDetails", details)
+        </div>
+    </div>
+</section>

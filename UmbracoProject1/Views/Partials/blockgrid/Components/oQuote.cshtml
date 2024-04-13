@@ -1,0 +1,5 @@
+﻿@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage<Umbraco.Cms.Core.Models.Blocks.BlockGridItem>
+@{
+    var content = (OQuote)Model.Content;
+}
+@await Html.PartialAsync("oskiPartials/OQuote", content)

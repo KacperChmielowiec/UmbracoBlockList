@@ -1,0 +1,12 @@
+﻿@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage<OCourses>
+@{
+    Layout = "Main.cshtml";
+    var pageName = Model.Name == "Portfolio" ? "Content_page_container" : String.Empty; 
+}
+
+@* the fun starts here *@
+<main class="inner-page Content_page_container" style="width: 100%">
+    <div class="block_list_container">
+        @Html.GetBlockListHtml(Model.OCourseContent)
+    </div>
+</main>
